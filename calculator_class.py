@@ -1,5 +1,5 @@
 import re
-import math
+# import math
 import tkinter as tk
 from typing import List
 
@@ -46,16 +46,9 @@ class Calculator:
 
     def calculate(self, event=None):
         fixed_text = self._fix_text(self.display.get())
-        equations = self._get_equations(fixed_text)
 
         try:
-            if len(equations) == 1:
-                result = eval(self._fix_text(equations[0]))
-            else:
-                result = eval(self._fix_text(equations[0]))
-                for equation in equations[1:]:
-                    result = math.pow(result, eval(self._fix_text(equation)))
-
+            result = eval(fixed_text)
             self.display.delete(0, 'end')
             self.display.insert('end', result)
             self.label.config(text=f'{fixed_text} = {result}')
@@ -75,6 +68,8 @@ class Calculator:
         text = re.sub(r'([\.\+\/\-\*\^])\1+', r'\1', text, 0)
         # Substitui () ou *() para nada
         text = re.sub(r'\*?\(\)', '', text)
+        # Substitui ^ para **
+        text = text.replace('^', '**')
 
         return text
 
