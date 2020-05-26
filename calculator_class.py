@@ -54,7 +54,7 @@ class Calculator:
             fixed_text = self._solve_parentheses(fixed_text)
             fixed_text = self._solve_exponentiations(fixed_text)
             result = eval(fixed_text)
-            
+
             self.display.delete(0, 'end')
             self.display.insert('end', result)
             self.label.config(text=f'{fixed_text} = {result}')
