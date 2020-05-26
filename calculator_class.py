@@ -45,6 +45,10 @@ class Calculator:
                     button.config(bg='#4785F4', fg='#fff')
 
     def calculate(self, event=None):
+        # Tive que alterar esse trecho de código
+        # as contas estavam sendo resolvidas em ordens
+        # incorretas. Tome cuidado ao enviar contas
+        # como 9**9**9, pois são contas muito pesadas
         fixed_text = self._fix_text(self.display.get())
 
         try:
