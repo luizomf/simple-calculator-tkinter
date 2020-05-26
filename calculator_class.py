@@ -1,5 +1,5 @@
 import re
-# import math
+import math
 import tkinter as tk
 from typing import List
 
@@ -47,23 +47,21 @@ class Calculator:
     def calculate(self, event=None):
         # Tive que alterar esse trecho de código
         # as contas estavam sendo resolvidas em ordens
-        # incorretas. Tome cuidado ao enviar contas
-        # como 9**9**9, pois são contas muito pesadas
+        # incorretas. Deu uma diferença boa =)
         fixed_text = self._fix_text(self.display.get())
 
         try:
+            fixed_text = self._solve_parentheses(fixed_text)
+            fixed_text = self._solve_exponentiations(fixed_text)
             result = eval(fixed_text)
+            
             self.display.delete(0, 'end')
             self.display.insert('end', result)
             self.label.config(text=f'{fixed_text} = {result}')
-
         except OverflowError:
             self.label.config(text='Não consegui realizar essa conta, sorry!')
         except Exception:
             self.label.config(text='Conta inválida')
-
-    def _get_equations(self, text):
-        return re.split(r'\^', text, 0)
 
     def _fix_text(self, text):
         # Substitui tudo que não for 0123456789./*-+^ para nada
@@ -73,9 +71,35 @@ class Calculator:
         # Substitui () ou *() para nada
         text = re.sub(r'\*?\(\)', '', text)
         # Substitui ^ para **
-        text = text.replace('^', '**')
+        # text = text.replace('^', '**')
 
         return text
+
+    def _solve_exponentiations(self, equation):
+        exp_regex = re.compile(r'\d+\.?\d*(?:\^|\*\*)\d+\.?\d*', flags=re.S)
+        new_equation = self._fix_text(equation)
+        found_equations = exp_regex.findall(new_equation)
+
+        while found_equations:
+            for equation in found_equations:
+                first_value, second_value = re.split(r'(?:\^|\*\*)', equation)
+                result = math.pow(float(first_value), float(second_value))
+                new_equation = new_equation.replace(equation, str(result), 1)
+            found_equations = exp_regex.findall(new_equation)
+        return new_equation
+
+    def _solve_parentheses(self, equation):
+        parentheses_regex = re.compile(r'\([\d\^\/\*\-\+\.]+\)', flags=re.S)
+        new_equation = self._fix_text(equation)
+        found_equations = parentheses_regex.findall(new_equation)
+
+        while found_equations:
+            for equation in found_equations:
+                exponentiations_solved = self._solve_exponentiations(equation)
+                result = eval(self._fix_text(exponentiations_solved))
+                new_equation = new_equation.replace(equation, str(result), 1)
+            found_equations = parentheses_regex.findall(new_equation)
+        return new_equation
 
     def add_text_to_display(self, event=None):
         self.display.insert('end', event.widget['text'])
