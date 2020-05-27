@@ -10,18 +10,18 @@ def make_root() -> tk.Tk:
     return root
 
 
-def make_label(root) -> tk.Label:
+def make_label(root, **grid_options) -> tk.Label:
     label = tk.Label(
         root, text='Sem conta ainda',
         anchor='e', justify='right', background='#fff'
     )
-    label.grid(row=0, column=0, columnspan=5, sticky='news')
+    label.grid(**grid_options)
     return label
 
 
-def make_display(root) -> tk.Entry:
+def make_display(root, **grid_options) -> tk.Entry:
     display = tk.Entry(root)
-    display.grid(row=1, column=0, columnspan=5, sticky='news', pady=(0, 10))
+    display.grid(**grid_options)
     display.config(
         font=('Helvetica', 40, 'bold'),
         justify='right', bd=1, relief='flat',
@@ -37,7 +37,20 @@ def _display_control_a(event):
     return 'break'
 
 
-def make_buttons(root) -> List[List[tk.Button]]:
+def make_button(root, text, **grid_options) -> tk.Button:
+    btn = tk.Button(root, text=text)
+    btn.grid(**grid_options)
+    btn.config(
+        font=('Helvetica', 15, 'normal'),
+        pady=40, width=1, background='#f1f2f3', bd=0,
+        cursor='hand2', highlightthickness=0,
+        highlightcolor='#ccc', activebackground='#ccc',
+        highlightbackground='#ccc'
+    )
+    return btn
+
+
+def make_buttons(root, starting_row) -> List[List[tk.Button]]:
     button_texts: List[List[str]] = [
         ['7', '8', '9', '+', 'C'],
         ['4', '5', '6', '-', '/'],
@@ -47,17 +60,12 @@ def make_buttons(root) -> List[List[tk.Button]]:
 
     buttons: List[List[tk.Button]] = []
 
-    for row, row_value in enumerate(button_texts, start=2):
+    for row, row_value in enumerate(button_texts, start=starting_row):
         button_row = []
         for col_index, col_value in enumerate(row_value):
-            btn = tk.Button(root, text=col_value)
-            btn.grid(row=row, column=col_index, sticky='news', padx=5, pady=5)
-            btn.config(
-                font=('Helvetica', 15, 'normal'),
-                pady=40, width=1, background='#f1f2f3', bd=0,
-                cursor='hand2', highlightthickness=0,
-                highlightcolor='#ccc', activebackground='#ccc',
-                highlightbackground='#ccc'
+            btn = make_button(
+                root, text=col_value,
+                row=row, column=col_index, sticky='news', padx=5, pady=5
             )
             button_row.append(btn)
         buttons.append(button_row)

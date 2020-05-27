@@ -1,0 +1,67 @@
+import tkinter as tk
+from typing import List
+from calculator_class import Calculator
+
+
+class CalculatorGui:
+    def __init__(
+        self,
+        root: tk.Tk,
+        label: tk.Label,
+        display: tk.Entry,
+        button_list: List[List[tk.Button]],
+        calculator: Calculator
+    ) -> None:
+        self.root = root
+        self.label = label
+        self.display = display
+        self.button_list = button_list
+        self.calculator = calculator
+
+    def start(self):
+        self._config_display()
+        self._config_buttons()
+        self.root.mainloop()
+
+    def _config_display(self):
+        display = self.display
+        display.bind('<Return>', self.calculate)
+        display.bind('<KP_Enter>', self.calculate)
+
+    def _config_buttons(self):
+        buttons_list = self.button_list
+        for row in buttons_list:
+            for button in row:
+                button_text = button['text']
+
+                if button_text == 'C':
+                    button.bind('<Button-1>', self.clear_display)
+                    button.config(bg='#EA4335', fg='#fff')
+
+                if button_text in '0123456789.+-/*()^':
+                    button.bind('<Button-1>', self.add_text_to_display)
+
+                if button_text == '=':
+                    button.bind('<Button-1>', self.calculate)
+                    button.config(bg='#4785F4', fg='#fff')
+
+    def calculate(self, event=None):
+        equation = self.display.get()
+
+        try:
+            result = self.calculator.calculate(equation)
+
+            self.display.delete(0, 'end')
+            self.display.insert('end', result)
+            self.label.config(text=f'{equation} = {result}')
+        except OverflowError:
+            self.label.config(text='Não consegui realizar essa conta, sorry!')
+        except Exception:
+            self.label.config(text='Conta inválida')
+
+    def add_text_to_display(self, event=None):
+        self.display.insert('end', event.widget['text'])
+        self.display.focus()
+
+    def clear_display(self, event=None):
+        self.display.delete(0, 'end')
