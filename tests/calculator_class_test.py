@@ -28,6 +28,14 @@ class CalculatorClassTest(unittest.TestCase):
         with self.assertRaises(OverflowError):
             self.calculate('9^9^9^9')
 
-    def test_should_raise_syntaxerror(self):
+    def test_should_raise_syntaxerror_for_empty_parentheses(self):
         with self.assertRaises(SyntaxError):
             self.calculate('()()')
+
+    def test_should_raise_syntaxerror_if_not_an_equation(self):
+        with self.assertRaises(SyntaxError):
+            self.calculate('print')
+
+    def test_should_raise_syntaxerror_for_parentheses_not_matching(self):
+        with self.assertRaises(SyntaxError):
+            self.calculate('(2+2))')
