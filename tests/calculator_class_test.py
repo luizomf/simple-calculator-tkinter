@@ -20,7 +20,7 @@ class CalculatorClassTest(unittest.TestCase):
             '-23.72196835690842'
         )
 
-    def test_should_raise_overflowerror(self):
+    def test_should_raise_overflowerror_in_exponentiation_too_high(self):
         with self.assertRaises(OverflowError):
             calculate('9^9^9^9')
 
