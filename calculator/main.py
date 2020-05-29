@@ -1,7 +1,7 @@
 from calculator_factories import make_root, make_display, make_label, \
     make_buttons
 from calculator_gui import CalculatorGui
-from calculator_class import Calculator
+from calculator_actions import calculate
 
 
 def main():
@@ -11,8 +11,7 @@ def main():
     label = make_label(root, row=0, column=0, columnspan=5, sticky='news')
     buttons = make_buttons(root, starting_row=2)
 
-    calculator = Calculator()
-    calculator_gui = CalculatorGui(root, label, display, buttons, calculator)
+    calculator_gui = CalculatorGui(root, label, display, buttons, calculate)
     calculator_gui.start()
 
 
